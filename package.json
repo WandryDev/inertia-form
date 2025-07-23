@@ -1,6 +1,6 @@
 {
   "name": "@wandry/inertia-form",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Production-ready React form component for Inertia.js",
   "keywords": [
     "react",
