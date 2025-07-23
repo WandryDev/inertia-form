@@ -11,6 +11,10 @@
     "ui-component",
     "typescript"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WandryDev/inertia-form"
+  },
   "main": "dist/index.mjs",
   "module": "dist/index.mjs",
   "files": [
