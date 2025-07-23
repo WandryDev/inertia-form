@@ -104,5 +104,3 @@ function CustomNumberField({ name, label }) {
 ISC
 
 ---
-
-[Документация и исходники](https://github.com/WandryDev/inertia-form)
