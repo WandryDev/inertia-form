@@ -16,6 +16,10 @@
   "files": [
     "dist"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WandryDev/inertia-form/"
+  },
   "scripts": {
     "test": "DEBUG_PRINT_LIMIT=100000 vitest run",
     "build": "tsup"
@@ -47,6 +51,7 @@
     "jsdom": "^26.1.0",
     "lucide-react": "^0.525.0",
     "react": "^19.1.0",
+    "semantic-release": "^24.2.7",
     "tailwind-merge": "^3.3.1",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3",
