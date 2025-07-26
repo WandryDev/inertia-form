@@ -1,5 +1,7 @@
 # @wandry/inertia-form
 
+![Wandry Inertia Form](public/hero.png)
+
 Production-ready React form components for [Inertia.js](https://inertiajs.com/) with TypeScript support. Позволяет быстро создавать формы с поддержкой валидации, ошибок, сброса, кастомных полей и современных UI-практик (Radix UI, shadcn/ui, Tailwind).
 
 ## 🚀 Быстрый старт
