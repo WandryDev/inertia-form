@@ -4,6 +4,7 @@ import { VisitOptions } from "@inertiajs/core";
 import { InertiaFormProps, useForm } from "@inertiajs/react";
 
 import { cn } from "../../lib/utils";
+import { autoAdapter, ValidationAdapter } from "../validator/adapters";
 
 type FormOptions = Omit<VisitOptions, "data">;
 type FormData = Record<string, any>;
@@ -20,6 +21,8 @@ type FormProps = React.PropsWithChildren<{
   options?: FormOptions;
   isEditable?: boolean;
   className?: string;
+  validationSchema?: any;
+  validator?: ValidationAdapter;
   onSubmit?: (value: any) => void;
 }> &
   FormAttrs;
@@ -40,14 +43,33 @@ function Form({
   defaultValues,
   options,
   className,
+  validationSchema,
+  validator,
   method = "post",
   ...attrs
 }: FormProps) {
   const form = useForm(defaultValues);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const validate = async (data: FormData): Promise<boolean> => {
+    const adapter = validator ?? autoAdapter(validationSchema);
+
+    const result = await adapter.validate(data);
+
+    if (!result.success && result.errors) {
+      form.setError(result.errors);
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     e.stopPropagation();
+
+    const isValid = await validate(form.data);
+
+    if (!isValid) return;
 
     const handler = form[method];
     handler(action, options);

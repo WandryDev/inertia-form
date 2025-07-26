@@ -24,6 +24,8 @@ type FormProps<T = FormData> = {
   options?: VisitOptions;
   id?: string;
   className?: string;
+  validationSchema?: any;
+  validator?: ValidationAdapter;
   onSubmit?: (values: T) => void;
   children: ReactNode;
 } & Omit<HTMLAttributes<HTMLFormElement>, "defaultValue" | "onSubmit">;
@@ -107,6 +109,17 @@ type FieldProps = WithSharedProps<{
   controller: (props: FieldControllerProps) => ReactNode;
   labelClassName?: string;
 }>;
+```
+
+### ValidationAdapter
+
+```tsx
+interface ValidationAdapter {
+  validate(data: any): Promise<{
+    success: boolean;
+    errors?: Record<string, string>;
+  }>;
+}
 ```
 
 ### SubmitButton

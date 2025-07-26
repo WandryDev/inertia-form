@@ -29,14 +29,16 @@ import { Form } from "@wandry/inertia-form";
 
 ### Опциональные
 
-| Prop            | Тип                                               | По умолчанию  | Описание                    |
-| --------------- | ------------------------------------------------- | ------------- | --------------------------- |
-| `method`        | `"get" \| "post" \| "put" \| "patch" \| "delete"` | `"post"`      | HTTP метод для отправки     |
-| `defaultValues` | `Record<string, any>`                             | `{}`          | Начальные значения полей    |
-| `options`       | `VisitOptions`                                    | `{}`          | Опции для Inertia.js visit  |
-| `id`            | `string`                                          | -             | ID формы                    |
-| `className`     | `string`                                          | `"space-y-4"` | CSS классы для формы        |
-| `onSubmit`      | `(values: any) => void`                           | -             | Callback при отправке формы |
+| Prop               | Тип                                               | По умолчанию  | Описание                          |
+| ------------------ | ------------------------------------------------- | ------------- | --------------------------------- |
+| `method`           | `"get" \| "post" \| "put" \| "patch" \| "delete"` | `"post"`      | HTTP метод для отправки           |
+| `defaultValues`    | `Record<string, any>`                             | `{}`          | Начальные значения полей          |
+| `options`          | `VisitOptions`                                    | `{}`          | Опции для Inertia.js visit        |
+| `id`               | `string`                                          | -             | ID формы                          |
+| `className`        | `string`                                          | `"space-y-4"` | CSS классы для формы              |
+| `validationSchema` | `any`                                             | -             | Схема валидации (автоопределение) |
+| `validator`        | `ValidationAdapter`                               | -             | Кастомный адаптер валидации       |
+| `onSubmit`         | `(values: any) => void`                           | -             | Callback при отправке формы       |
 
 ### HTML Attributes
 
@@ -100,6 +102,44 @@ interface UserFormData {
     role: "user",
     agree: false,
   }}
+>
+  <TextField name="name" label="Имя" />
+  <TextField name="email" label="Email" type="email" />
+  <SelectField
+    name="role"
+    label="Роль"
+    options={[
+      { value: "admin", title: "Администратор" },
+      { value: "user", title: "Пользователь" },
+    ]}
+  />
+  <CheckboxField name="agree" label="Согласен с условиями" />
+  <SubmitButton>Создать</SubmitButton>
+</Form>;
+```
+
+### Форма с валидацией
+
+```tsx
+import * as yup from "yup";
+
+const userSchema = yup.object({
+  name: yup.string().required("Имя обязательно").min(2, "Минимум 2 символа"),
+  email: yup.string().email("Неверный email").required("Email обязателен"),
+  role: yup.string().oneOf(["admin", "user"], "Неверная роль").required(),
+  agree: yup.boolean().oneOf([true], "Необходимо согласие"),
+});
+
+<Form<UserFormData>
+  action="/users"
+  method="post"
+  defaultValues={{
+    name: "",
+    email: "",
+    role: "user",
+    agree: false,
+  }}
+  validationSchema={userSchema}
 >
   <TextField name="name" label="Имя" />
   <TextField name="email" label="Email" type="email" />
