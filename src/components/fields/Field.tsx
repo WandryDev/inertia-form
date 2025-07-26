@@ -1,9 +1,7 @@
 import React from "react";
 import { Label } from "../../ui/label";
 
-import { useFormContext } from "../../hooks";
-
-type FieldValue = any;
+import { type FieldValue, useField } from "../../hooks/useField";
 
 type FieldControllerProps<TValue = FieldValue> = {
   onChange: (value: TValue) => void;
@@ -21,6 +19,7 @@ type FieldProps<TValue = FieldValue> = {
   id?: string;
   label?: string;
   labelClassName?: string;
+  defaultValue?: FieldValue;
 };
 
 function Field<TValue>({
@@ -29,18 +28,15 @@ function Field<TValue>({
   label,
   controller,
   labelClassName,
+  defaultValue,
 }: FieldProps<TValue>) {
-  const { form, setValue, getValues } = useFormContext();
-
-  const error = form.errors[name];
-  const value = getValues(name);
-
-  const onChange = (value: FieldValue) => {
-    setValue(name, value);
-  };
+  const { error, value, onChange } = useField(name, { defaultValue });
 
   return (
-    <div className="grid w-full items-center gap-1.5 relative">
+    <div
+      className="grid w-full items-center gap-1.5 relative"
+      data-testid="field-group"
+    >
       {label && (
         <Label htmlFor={id} className={labelClassName}>
           {label}

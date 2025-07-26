@@ -8,7 +8,6 @@ interface WatchOptions {
   exact?: boolean; // для точного совпадения пути
 }
 
-// Перегрузки для разных типов параметров
 export function useWatch(): Record<string, any>;
 export function useWatch(name: string, options?: WatchOptions): any;
 export function useWatch(
@@ -23,7 +22,6 @@ export function useWatch(
   const { form } = useFormContext();
   const { defaultValue, exact = false } = options;
 
-  // Инициализируем значение
   const [value, setValue] = useState(() => {
     if (!name) {
       return form.data || {};

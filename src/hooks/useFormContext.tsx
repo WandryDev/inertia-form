@@ -12,12 +12,12 @@ export const useFormContext = () => {
     throw new Error("Field must be used inside Form component");
   }
 
-  const getValues = (name?: string) => {
+  const getValues = (name?: string, defaultValue?: any) => {
     if (!name) {
       return context.form.data;
     }
 
-    return get(context.form.data, name, undefined);
+    return get(context.form.data, name, defaultValue);
   };
 
   const setValue = (name: string, value: any) => {
