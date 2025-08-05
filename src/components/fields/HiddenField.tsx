@@ -17,7 +17,7 @@ const HiddenField: React.FC<HiddenFieldProps> = ({ name, ...attrs }) => {
     <Field
       name={name}
       label={attrs.label}
-      labelClassName={attrs.labelClassName}
+      classes={attrs.classes}
       controller={(field) => (
         <Input
           {...field}

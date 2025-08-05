@@ -6,7 +6,6 @@ import { WithSharedProps } from "./type";
 
 type TextFieldProps = WithSharedProps<
   {
-    labelClassName?: string;
     name: string;
     type?: HTMLInputTypeAttribute;
   } & HTMLAttributes<HTMLInputElement>
@@ -17,7 +16,7 @@ const TextField: React.FC<TextFieldProps> = ({ name, ...attrs }) => {
     <Field
       name={name}
       label={attrs.label}
-      labelClassName={attrs.labelClassName}
+      classes={attrs.classes}
       controller={(field) => (
         <Input
           {...field}

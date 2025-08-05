@@ -14,7 +14,7 @@ type FieldController<TValue = FieldValue> = (
   field: FieldControllerProps<TValue>
 ) => React.ReactElement;
 
-type FieldClasses = {
+export type FieldClasses = {
   label?: string;
   container?: string;
   error?: string;

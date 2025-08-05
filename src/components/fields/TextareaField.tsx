@@ -21,7 +21,7 @@ const TextareaField: React.FC<TextareaFieldProps> = ({
     <Field
       name={name}
       label={attrs.label}
-      labelClassName={attrs.labelClassName}
+      classes={attrs.classes}
       controller={(field) => (
         <Textarea
           {...field}

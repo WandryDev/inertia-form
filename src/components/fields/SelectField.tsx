@@ -30,11 +30,11 @@ const SelectField: React.FC<SelectFieldProps> = ({
   options,
   placeholder,
   className,
-  labelClassName,
+  ...attrs
 }) => {
   return (
     <Field
-      labelClassName={labelClassName}
+      classes={attrs.classes}
       name={name}
       label={label}
       controller={(field) => {

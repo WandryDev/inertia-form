@@ -11,11 +11,16 @@ type CheckboxFieldProps = WithSharedProps<
   } & HTMLAttributes<HTMLSelectElement>
 >;
 
-const CheckboxField: React.FC<CheckboxFieldProps> = ({ name, label }) => {
+const CheckboxField: React.FC<CheckboxFieldProps> = ({
+  name,
+  label,
+  ...attrs
+}) => {
   return (
     <Field
       name={name}
       label={label}
+      classes={attrs.classes}
       controller={(field) => (
         <Checkbox
           checked={field.value as boolean}
