@@ -23,6 +23,7 @@ type FormProps = React.PropsWithChildren<{
   className?: string;
   validationSchema?: any;
   validator?: ValidationAdapter;
+  sharedProps?: Record<string, any>;
   onSubmit?: (value: any) => void;
 }> &
   FormAttrs;
@@ -31,6 +32,7 @@ type FormProviderProps = React.PropsWithChildren<FormContextValues>;
 
 type FormContextValues = {
   form: InertiaFormProps<FormData>;
+  sharedProps?: Record<string, any>;
   reset?: () => void;
 };
 
@@ -45,6 +47,7 @@ function Form({
   className,
   validationSchema,
   validator,
+  sharedProps,
   method = "post",
   ...attrs
 }: FormProps) {
@@ -88,7 +91,7 @@ function Form({
       className={cn("space-y-4", className)}
       {...attrs}
     >
-      <FormProvider form={form} reset={reset}>
+      <FormProvider form={form} reset={reset} sharedProps={sharedProps}>
         {children}
       </FormProvider>
     </form>
@@ -98,10 +101,11 @@ function Form({
 const FormProvider: React.FC<FormProviderProps> = ({
   form,
   children,
+  sharedProps,
   reset,
 }) => {
   return (
-    <FormContext.Provider value={{ form, reset }}>
+    <FormContext.Provider value={{ form, sharedProps, reset }}>
       {children}
     </FormContext.Provider>
   );

@@ -8,6 +8,7 @@ import * as yup from "yup";
 import joi from "joi";
 
 import userEvent from "@testing-library/user-event";
+import { useFormContext } from "../hooks";
 
 const submitForm = async () => {
   const user = userEvent.setup();
@@ -127,5 +128,26 @@ describe("Form", () => {
     await submitForm();
 
     expect(screen.getByText("test is required")).toBeInTheDocument();
+  });
+
+  it("should inject shared props a cross children", async () => {
+    const TestComp = () => {
+      const { sharedProps } = useFormContext();
+      return <TextField name="test" label={sharedProps?.label} />;
+    };
+
+    render(
+      <Form
+        action="/submit"
+        method="post"
+        data-testid="form"
+        sharedProps={{ label: "Shared Label" }}
+      >
+        <TestComp />
+        <SubmitButton>Submit</SubmitButton>
+      </Form>
+    );
+
+    expect(screen.getByText("Shared Label")).toBeInTheDocument();
   });
 });
