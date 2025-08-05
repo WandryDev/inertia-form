@@ -56,6 +56,8 @@ function Form({
   const validate = async (data: FormData): Promise<boolean> => {
     const adapter = validator ?? autoAdapter(validationSchema);
 
+    if (!adapter) return true;
+
     const result = await adapter.validate(data);
 
     if (!result.success && result.errors) {

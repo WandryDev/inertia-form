@@ -57,9 +57,10 @@ export const joiAdapter = (schema: any): ValidationAdapter => ({
   },
 });
 
-export const autoAdapter = (schema: any): ValidationAdapter => {
+export const autoAdapter = (schema: any): ValidationAdapter | null => {
   if (isJoiSchema(schema)) return joiAdapter(schema);
   if (isYupSchema(schema)) return yupAdapter(schema);
   if (isZodSchema(schema)) return zodAdapter(schema);
-  throw new Error("Unknown validation schema type");
+
+  return null;
 };
