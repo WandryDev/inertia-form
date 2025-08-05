@@ -74,4 +74,24 @@ describe("Field", () => {
       );
     }).toThrow("Field must be used inside Form component");
   });
+
+  it("should has custom classes", () => {
+    render(
+      <Form action="">
+        <Field
+          name="test"
+          label="Test field"
+          classes={{
+            label: "custom-label",
+            container: "custom-container",
+            error: "custom-error",
+          }}
+          controller={(field) => <input />}
+        />
+      </Form>
+    );
+
+    expect(screen.getByText("Test field")).toHaveClass("custom-label");
+    expect(screen.getByTestId("field-group")).toHaveClass("custom-container");
+  });
 });
