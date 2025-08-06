@@ -3,22 +3,27 @@ import get from "lodash.get";
 import isEqual from "lodash.isequal";
 import { useFormContext } from "./useFormContext";
 
-interface WatchOptions {
-  defaultValue?: any;
+type WatchOptions<T> = {
+  defaultValue?: T;
   exact?: boolean; // для точного совпадения пути
-}
+};
 
-export function useWatch(): Record<string, any>;
-export function useWatch(name: string, options?: WatchOptions): any;
-export function useWatch(
+type DefaultWatchValue = Record<string, any> | undefined;
+
+export function useWatch<T = DefaultWatchValue>(): T;
+export function useWatch<T = DefaultWatchValue>(
+  name: string,
+  options?: WatchOptions<T>
+): T;
+export function useWatch<T = DefaultWatchValue>(
   names: string[],
-  options?: WatchOptions
-): Record<string, any>;
+  options?: WatchOptions<T>
+): T;
 
-export function useWatch(
+export function useWatch<T = DefaultWatchValue>(
   name?: string | string[],
-  options: WatchOptions = {}
-): any {
+  options: WatchOptions<T> = {}
+): T {
   const { form } = useFormContext();
   const { defaultValue, exact = false } = options;
 
@@ -53,7 +58,6 @@ export function useWatch(
       newValue = get(form.data, name, defaultValue);
     }
 
-    // Сравниваем значения
     if (!isEqual(prevValueRef.current, newValue)) {
       setValue(newValue);
       prevValueRef.current = newValue;
