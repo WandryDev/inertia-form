@@ -48,6 +48,7 @@ function Form({
   validationSchema,
   validator,
   sharedProps,
+  onSubmit,
   method = "post",
   ...attrs
 }: FormProps) {
@@ -75,6 +76,12 @@ function Form({
     const isValid = await validate(form.data);
 
     if (!isValid) return;
+
+    if (onSubmit) {
+      onSubmit(form.data);
+
+      return;
+    }
 
     const handler = form[method];
     handler(action, options);
