@@ -56,7 +56,7 @@ function Field<TValue>({
 
       {error && (
         <span
-          className={clsx("text-sm text-red-600", classes?.error)}
+          className={clsx("text-sm text-red-500", classes?.error)}
           data-testid="field-error"
         >
           {error}
