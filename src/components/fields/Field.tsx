@@ -24,7 +24,7 @@ type FieldProps<TValue = FieldValue> = {
   name: string;
   controller: FieldController<TValue>;
   id?: string;
-  label?: string;
+  label?: string | React.ReactNode;
   classes?: FieldClasses;
   defaultValue?: FieldValue;
 };
@@ -39,6 +39,20 @@ function Field<TValue>({
 }: FieldProps<TValue>) {
   const { error, value, onChange } = useField(name, { defaultValue });
 
+  const renderLabel = () => {
+    if (!label) return null;
+
+    if (typeof label === "string") {
+      return (
+        <Label htmlFor={id} className={classes?.label}>
+          {label}
+        </Label>
+      );
+    }
+
+    return label;
+  };
+
   return (
     <div
       className={clsx(
@@ -47,11 +61,7 @@ function Field<TValue>({
       )}
       data-testid="field-group"
     >
-      {label && (
-        <Label htmlFor={id} className={classes?.label}>
-          {label}
-        </Label>
-      )}
+      {renderLabel()}
       {controller({ onChange, value })}
 
       {error && (

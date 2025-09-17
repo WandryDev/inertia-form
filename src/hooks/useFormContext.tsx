@@ -21,19 +21,6 @@ export const useFormContext = () => {
   };
 
   const setValue = (name: string, value: any) => {
-    // const isNestedObject = () => name.includes(".");
-
-    // if (isNestedObject()) {
-    // return context.form.setData((data: any = {}) => {
-    //   const clonedData = cloneDeep(data);
-    //   set(clonedData, name, value);
-
-    //   return clonedData;
-    // });
-    // }
-
-    // context.form.setData(name, value);
-
     return context.form.setData((data: any = {}) => {
       const clonedData = cloneDeep(data);
       set(clonedData, name, value);
