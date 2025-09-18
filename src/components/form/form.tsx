@@ -77,11 +77,7 @@ function Form({
 
     if (!isValid) return;
 
-    if (onSubmit) {
-      onSubmit(form.data);
-
-      return;
-    }
+    onSubmit?.(form.data);
 
     const handler = form[method];
     handler(action, options);
