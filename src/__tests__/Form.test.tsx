@@ -1,14 +1,15 @@
 import { render, screen } from "@testing-library/react";
 
-import { Form, SubmitButton } from "../components/form";
-import { TextField } from "../components/fields";
-
 import * as z from "zod";
 import * as yup from "yup";
 import joi from "joi";
 
 import userEvent from "@testing-library/user-event";
+
 import { useFormContext } from "../hooks";
+
+import { Form, SubmitButton } from "../components/form";
+import { Field } from "../components/fields";
 
 const submitForm = async () => {
   const user = userEvent.setup();
@@ -16,6 +17,21 @@ const submitForm = async () => {
   const button = screen.getByRole("button", { name: /submit/i });
 
   await user.click(button);
+};
+
+const TextField = ({ name, label }: { name: string; label?: string }) => {
+  return (
+    <Field
+      name={name}
+      label={label}
+      controller={(field) => (
+        <input
+          value={field.value as string}
+          onChange={(e) => field.onChange(e.target.value)}
+        />
+      )}
+    />
+  );
 };
 
 describe("Form", () => {

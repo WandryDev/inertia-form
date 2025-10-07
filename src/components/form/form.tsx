@@ -1,6 +1,6 @@
 import React, { HTMLAttributes } from "react";
 
-import { VisitOptions } from "@inertiajs/core";
+import { Method, VisitOptions } from "@inertiajs/core";
 import { InertiaFormProps, useForm } from "@inertiajs/react";
 
 import { cn } from "../../lib/utils";
@@ -13,8 +13,13 @@ type FormAttrs = Omit<
   "defaultValue" | "onSubmit"
 >;
 
+type WayfinderFormAction = {
+  url: string;
+  method: Method;
+};
+
 type FormProps = React.PropsWithChildren<{
-  action: string;
+  action: string | WayfinderFormAction;
   id?: string;
   method?: "get" | "post" | "put" | "patch" | "delete";
   defaultValues?: FormData;
@@ -26,6 +31,7 @@ type FormProps = React.PropsWithChildren<{
   sharedProps?: Record<string, any>;
   preventFormAction?: boolean;
   onSubmit?: (value: any) => void;
+  useWayfinder?: boolean;
 }> &
   FormAttrs;
 
@@ -50,6 +56,7 @@ function Form({
   validator,
   sharedProps,
   onSubmit,
+  useWayfinder = false,
   preventFormAction = false,
   method = "post",
   ...attrs
@@ -83,14 +90,16 @@ function Form({
 
     if (preventFormAction) return;
 
-    const handler = form[method];
-    handler(action, options);
+    if (useWayfinder) {
+      form.submit(action as WayfinderFormAction, options);
+    } else {
+      const handler = form[method];
+      handler(action as string, options);
+    }
   };
 
   const reset = () => {
-    form.reset();
-    const handler = form[method];
-    handler(action, options);
+    form.setData(defaultValues || {});
   };
 
   return (

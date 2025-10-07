@@ -7,7 +7,7 @@ import { Form } from "../components/form";
 const user = userEvent.setup();
 
 const TestWatchComponent = ({ name = "test" }: { name?: string }) => {
-  const value = useWatch(name);
+  const value = useWatch<any>(name);
 
   return <div data-testid="test-watch">{value}</div>;
 };

@@ -1,8 +1,8 @@
 import React from "react";
-import { Label } from "../../ui/label";
-
-import { type FieldValue, useField } from "../../hooks/useField";
 import clsx from "clsx";
+
+import { Label } from "../../ui/label";
+import { type FieldValue, useField } from "../../hooks/useField";
 
 type FieldControllerProps<TValue = FieldValue> = {
   onChange: (value: TValue) => void;
