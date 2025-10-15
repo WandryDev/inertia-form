@@ -327,38 +327,6 @@ function ColorField({
 <ColorField name="themeColor" label="Цвет темы" defaultValue="#3b82f6" />;
 ```
 
-## Утилиты
-
-### Утилиты для работы с объектами
-
-Библиотека использует lodash утилиты:
-
-```tsx
-import get from "lodash.get";
-import set from "lodash.set";
-import cloneDeep from "lodash.clonedeep";
-import isEqual from "lodash.isequal";
-
-// Примеры использования в коде
-const value = get(formData, "address.street", "");
-set(formData, "address.street", "New Street");
-const cloned = cloneDeep(formData);
-const isSame = isEqual(obj1, obj2);
-```
-
-### CSS утилиты
-
-```tsx
-import { cn } from "@wandry/inertia-form/lib/utils";
-
-// Объединение классов с поддержкой Tailwind
-const className = cn(
-  "base-class",
-  condition && "conditional-class",
-  "another-class"
-);
-```
-
 ## Расширение типов
 
 ### Создание кастомных типов полей

@@ -1,7 +1,7 @@
 import React from "react";
-import { Form } from "../src/components/form";
-import { Field } from "../src/components/fields";
-import { SubmitButton } from "../src/components/form";
+import { Form } from "../src/core/form";
+import { Field } from "../src/core/fields";
+import { SubmitButton } from "../src/core/form";
 
 export default function CustomFieldExample() {
   return (

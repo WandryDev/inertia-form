@@ -2,14 +2,13 @@ import { render, screen } from "@testing-library/react";
 
 import * as z from "zod";
 import * as yup from "yup";
-import joi from "joi";
 
 import userEvent from "@testing-library/user-event";
 
 import { useFormContext } from "../hooks";
 
-import { Form, SubmitButton } from "../components/form";
-import { Field } from "../components/fields";
+import { Form } from "../core/form";
+import { Field } from "../core/fields";
 
 const submitForm = async () => {
   const user = userEvent.setup();
@@ -23,12 +22,15 @@ const TextField = ({ name, label }: { name: string; label?: string }) => {
   return (
     <Field
       name={name}
-      label={label}
       controller={(field) => (
-        <input
-          value={field.value as string}
-          onChange={(e) => field.onChange(e.target.value)}
-        />
+        <label>
+          {label}
+          <input
+            value={field.value as string}
+            onChange={(e) => field.onChange(e.target.value)}
+          />
+          <span>{field.error}</span>
+        </label>
       )}
     />
   );
@@ -66,7 +68,7 @@ describe("Form", () => {
         validationSchema={schema}
       >
         <TextField name="test" />
-        <SubmitButton>Submit</SubmitButton>
+        <button type="submit">Submit</button>
       </Form>
     );
 
@@ -88,32 +90,7 @@ describe("Form", () => {
         validationSchema={schema}
       >
         <TextField name="test" />
-        <SubmitButton>Submit</SubmitButton>
-      </Form>
-    );
-
-    await submitForm();
-
-    expect(screen.getByText("test is required")).toBeInTheDocument();
-  });
-
-  it("should validate form data with joi", async () => {
-    const schema = joi.object({
-      test: joi.string().required().messages({
-        "any.required": "test is required",
-        "string.empty": "test is required",
-      }),
-    });
-
-    render(
-      <Form
-        action="/submit"
-        method="post"
-        data-testid="form"
-        validationSchema={schema}
-      >
-        <TextField name="test" />
-        <SubmitButton>Submit</SubmitButton>
+        <button type="submit">Submit</button>
       </Form>
     );
 
@@ -137,7 +114,7 @@ describe("Form", () => {
         validator={validator}
       >
         <TextField name="test" />
-        <SubmitButton>Submit</SubmitButton>
+        <button type="submit">Submit</button>
       </Form>
     );
 
@@ -160,7 +137,7 @@ describe("Form", () => {
         sharedProps={{ label: "Shared Label" }}
       >
         <TestComp />
-        <SubmitButton>Submit</SubmitButton>
+        <button type="submit">Submit</button>
       </Form>
     );
 

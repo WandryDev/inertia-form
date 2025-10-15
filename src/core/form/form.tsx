@@ -3,7 +3,6 @@ import React, { HTMLAttributes } from "react";
 import { Method, VisitOptions } from "@inertiajs/core";
 import { InertiaFormProps, useForm } from "@inertiajs/react";
 
-import { cn } from "../../lib/utils";
 import { autoAdapter, ValidationAdapter } from "../validator/adapters";
 
 type FormOptions = Omit<VisitOptions, "data">;
@@ -103,12 +102,7 @@ function Form({
   };
 
   return (
-    <form
-      id={id}
-      onSubmit={handleSubmit}
-      className={cn("space-y-4", className)}
-      {...attrs}
-    >
+    <form id={id} onSubmit={handleSubmit} className={className} {...attrs}>
       <FormProvider form={form} reset={reset} sharedProps={sharedProps}>
         {children}
       </FormProvider>

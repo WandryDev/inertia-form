@@ -1,12 +1,12 @@
 import React from "react";
-import { Form } from "../src/components/form";
+import { Form } from "../src/core/form";
 import {
   TextField,
   TextareaField,
   SelectField,
   CheckboxField,
-} from "../src/components/fields";
-import { SubmitButton } from "../src/components/form";
+} from "../src/core/fields";
+import { SubmitButton } from "../src/core/form";
 
 export default function FieldsDemoExample() {
   return (

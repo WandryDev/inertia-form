@@ -2,7 +2,7 @@ import { userEvent } from "@testing-library/user-event";
 import { render, screen, waitFor } from "@testing-library/react";
 
 import { useFormContext, useWatch } from "../hooks";
-import { Form } from "../components/form";
+import { Form } from "../core/form";
 
 const user = userEvent.setup();
 
