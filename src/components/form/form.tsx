@@ -25,6 +25,7 @@ type FormProps = React.PropsWithChildren<{
   validator?: ValidationAdapter;
   sharedProps?: Record<string, any>;
   preventFormAction?: boolean;
+  transform?: (data: FormData) => FormData;
   onSubmit?: (value: any) => void;
 }> &
   FormAttrs;
@@ -49,6 +50,7 @@ function Form({
   validationSchema,
   validator,
   sharedProps,
+  transform,
   onSubmit,
   preventFormAction = false,
   method = "post",
@@ -79,7 +81,9 @@ function Form({
 
     if (!isValid) return;
 
-    onSubmit?.(form.data);
+    const payload = transform?.(form.data) ?? form.data;
+
+    onSubmit?.(payload);
 
     if (preventFormAction) return;
 
