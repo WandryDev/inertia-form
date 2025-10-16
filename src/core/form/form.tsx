@@ -23,7 +23,6 @@ type FormProps = React.PropsWithChildren<{
   method?: "get" | "post" | "put" | "patch" | "delete";
   defaultValues?: FormData;
   options?: FormOptions;
-  isEditable?: boolean;
   className?: string;
   validationSchema?: any;
   validator?: ValidationAdapter;
