@@ -27,6 +27,7 @@ type FormProps = React.PropsWithChildren<{
   preventFormAction?: boolean;
   transform?: (data: FormData) => FormData;
   onSubmit?: (value: any) => void;
+  onBeforeSubmit?: (data: FormData, form: InertiaFormProps<FormData>) => void;
 }> &
   FormAttrs;
 
@@ -51,6 +52,7 @@ function Form({
   validator,
   sharedProps,
   transform,
+  onBeforeSubmit,
   onSubmit,
   preventFormAction = false,
   method = "post",
@@ -85,14 +87,13 @@ function Form({
 
     const payload = normalizedTransform(form.data);
 
+    onBeforeSubmit?.(form.data, form);
     onSubmit?.(payload);
 
     if (preventFormAction) return;
 
     form.setData(payload);
     form.submit(method, action, options);
-    // const handler = form[method];
-    // handler(action, options);
   };
 
   const reset = () => {
