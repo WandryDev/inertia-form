@@ -90,8 +90,9 @@ function Form({
     if (preventFormAction) return;
 
     form.transform(normalizedTransform);
-    const handler = form[method];
-    handler(action, options);
+    form.submit(method, action, options);
+    // const handler = form[method];
+    // handler(action, options);
   };
 
   const reset = () => {
