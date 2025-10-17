@@ -1,4 +1,4 @@
-import React, { HTMLAttributes } from "react";
+import React, { HTMLAttributes, useCallback } from "react";
 
 import { VisitOptions } from "@inertiajs/core";
 import { InertiaFormProps, useForm } from "@inertiajs/react";
@@ -77,24 +77,27 @@ function Form({
     return true;
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
 
-    const isValid = await validate(form.data);
+      const isValid = await validate(form.data);
 
-    if (!isValid) return;
+      if (!isValid) return;
 
-    const payload = normalizedTransform(form.data);
+      const payload = normalizedTransform(form.data);
 
-    onBeforeSubmit?.(form.data, form);
-    onSubmit?.(payload);
+      onBeforeSubmit?.(form.data, form);
+      onSubmit?.(payload);
 
-    if (preventFormAction) return;
+      if (preventFormAction) return;
 
-    form.setData(payload);
-    form.submit(method, action, options);
-  };
+      form.setData(payload);
+      form.submit(method, action, options);
+    },
+    [form.data]
+  );
 
   const reset = () => {
     form.reset();
