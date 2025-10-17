@@ -89,7 +89,7 @@ function Form({
 
     if (preventFormAction) return;
 
-    form.transform(normalizedTransform);
+    form.setData(payload);
     form.submit(method, action, options);
     // const handler = form[method];
     // handler(action, options);
