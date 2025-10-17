@@ -58,6 +58,8 @@ function Form({
 }: FormProps) {
   const form = useForm(defaultValues);
 
+  const normalizedTransform = transform ?? ((data: FormData) => data);
+
   const validate = async (data: FormData): Promise<boolean> => {
     const adapter = validator ?? autoAdapter(validationSchema);
 
@@ -81,12 +83,13 @@ function Form({
 
     if (!isValid) return;
 
-    const payload = transform?.(form.data) ?? form.data;
+    const payload = normalizedTransform(form.data);
 
     onSubmit?.(payload);
 
     if (preventFormAction) return;
 
+    form.transform(normalizedTransform);
     const handler = form[method];
     handler(action, options);
   };
