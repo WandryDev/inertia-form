@@ -2,6 +2,7 @@ import { renderHook } from "@testing-library/react";
 
 import { useField, useFormContext, useWatch } from "../hooks";
 import { Form } from "../core/form";
+import { useEffect } from "react";
 
 const TestWatchComponent = ({ name = "test" }: { name?: string }) => {
   const value = useWatch<any>(name);
@@ -40,5 +41,34 @@ describe("useWatch", () => {
     });
 
     expect(result.result.current).toBe("initial");
+  });
+
+  it("should return updated value", () => {
+    const TestComp = () => {
+      const { setValue } = useFormContext();
+
+      useEffect(() => {
+        setValue("watch", "updated");
+      }, []);
+
+      return null;
+    };
+
+    const result = renderHook(() => useWatch("watch"), {
+      wrapper: ({ children }) => (
+        <Form
+          action="/submit"
+          method="post"
+          data-testid="form"
+          defaultValues={{ watch: "initial" }}
+        >
+          {children}
+          <Input name="watch" />
+          <TestComp />
+        </Form>
+      ),
+    });
+
+    expect(result.result.current).toBe("updated");
   });
 });

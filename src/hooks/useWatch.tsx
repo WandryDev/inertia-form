@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import get from "../logic/get";
-import { isDeepStrictEqual } from "node:util";
-
+import isDeepStrictEqual from "../logic/isDeelEqual";
 import { useFormContext } from "./useFormContext";
 
 type WatchOptions<T> = {
@@ -23,9 +22,6 @@ export function useWatch<T = DefaultWatchValue>(
   const { form } = useFormContext();
 
   const [value, setValue] = useState(() => {
-    console.log("form data", form.data);
-    console.log("name", name);
-    console.log("options", options);
     if (!name) {
       return form.data || {};
     }

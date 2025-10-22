@@ -32,29 +32,25 @@
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@types/jest": "^30.0.0",
-    "@types/lodash.clonedeep": "^4.5.9",
-    "@types/lodash.set": "^4.3.9",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
     "jsdom": "^26.1.0",
     "msw": "^2.11.3",
     "semantic-release": "^24.2.7",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3",
-    "vitest": "^3.2.4",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6"
+    "vitest": "^3.2.4"
   },
   "peerDependencies": {
     "@inertiajs/core": "^2.0.17",
     "@inertiajs/react": "^2.0.17",
-    "react": "^19.1.0",
     "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6"
+    "@types/react-dom": "^19.1.6",
+    "react": "^19.1.0"
   },
   "dependencies": {
-    "lodash.clonedeep": "^4.5.0",
-    "lodash.set": "^4.3.2",
+    "react": "^19.1.0",
     "yup": "^1.6.1",
-    "zod": "^4.0.10",
-    "react": "^19.1.0"
+    "zod": "^4.0.10"
   }
 }
