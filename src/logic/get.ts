@@ -1,7 +1,13 @@
 import isObject from "./isObject";
 import stringToPath from "./stringToPath";
 
-export default <T>(object: T, path?: string, defaultValues?: any): any => {
+export default <T>(
+  object: T,
+  path?: string,
+  defaultValues: any = null
+): any => {
+  if (!object) return defaultValues;
+
   if (!path || !isObject(object)) return object;
 
   return (
