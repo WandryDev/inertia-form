@@ -1,117 +1,208 @@
 ![Wandry Inertia Form](public/hero.png)
 
-Production-ready React form components for [Inertia.js](https://inertiajs.com/) with TypeScript support. Позволяет быстро создавать формы с поддержкой валидации, ошибок, сброса, кастомных полей и современных UI-практик (Radix UI, shadcn/ui, Tailwind).
+# A simple way to create forms for Inertia applications.
 
-## 🚀 Быстрый старт
+## Project Goal
 
-```bash
-pnpm add @wandry/inertia-form
-```
+Simplify form development in Inertia.js/React applications.\
+Of course, Inertia.js has its own useForm and Form component, but it doesn't provide as many capabilities that everyone is used to when using react-hook-form.\
+We've made it so that anyone who has used react-hook-form can immediately use our library without studying the documentation from cover to cover.\
+
+### What we offer:
+
+- form value tracking with `useWatch`
+- getting field values anywhere in the code with `getValues()`
+- adding values to the form with `setValue()`
+- simpler and more flexible form key management, support for nested keys as a regular string `user.info.name`
+- creating custom fields with `Field` or `useField` components
+
+## How it's implemented
+
+The root point is the `Form` component, which implements a wrapper over useForm from inertia.js and creates a React.Context that wraps all form state and the ability to manipulate it. That's it. All you need to do is call the `<Form>` component and all child components will already be able to work with your form.
+
+## Wandry UI
+
+[https://ui.wandry.com.ua/](https://ui.wandry.com.ua/)
+
+We have created shadcn/registry for UI form components that are fully controlled — you can simply insert them into the code and your form will already be working. This way, your forms will look like this:
 
 ```tsx
-import { Form, TextField, SubmitButton } from "@wandry/inertia-form";
+import { Form } from "@wandry/inertia-form";
 
-export function MyForm() {
+import { TextField, PasswordField, SubmitButton } from "@/components/wandry-ui";
+
+const Login: React.FC = () => {
+  const loginSchema = z.object({
+    email: z.email(),
+    password: z.string(),
+  });
+
   return (
-    <Form action="/submit" method="post" defaultValues={{ name: "" }}>
-      <TextField name="name" label="Имя" />
-      <SubmitButton>Отправить</SubmitButton>
+    <Form action="/login" validationSchema={loginSchema}>
+      <TextField name="email" label="Email" />
+      <PasswordField name="password" label="Password" />
+      <SubmitButton />
     </Form>
   );
-}
+};
 ```
 
-## 📚 Документация
-
-Полная документация доступна в папке [docs](./docs/):
-
-- [📖 Основная документация](./docs/README.md)
-- [⚡ Быстрый старт](./docs/getting-started.md)
-- [🎯 Основные концепции](./docs/concepts.md)
-- [🧩 Компоненты](./docs/components/)
-- [🔧 Хуки](./docs/hooks/)
-- [📋 Руководства](./docs/guides/)
-- [💡 Примеры](./docs/examples/)
-
-## ✨ Особенности
-
-- ✅ **Простая интеграция** с Inertia.js и React
-- ✅ **TypeScript-first** подход
-- ✅ **Современный UI** (Radix UI, shadcn/ui, Tailwind)
-- ✅ **Валидация** и обработка ошибок
-- ✅ **Кастомные поля** через базовый Field компонент
-- ✅ **Хуки** для гибкой работы с состоянием
-- ✅ **Сброс формы** и управление состоянием
-
-## 🛠 Установка
-
-```bash
-# pnpm
-pnpm add @wandry/inertia-form
-
-# npm
-npm install @wandry/inertia-form
-
-# yarn
-yarn add @wandry/inertia-form
-```
-
-> **Важно:** Пакет требует peer-зависимости. См. [инструкцию по установке](./docs/getting-started.md).
-
-## 📖 Примеры
-
-### Простая форма
-
-```tsx
-import { Form, TextField, SubmitButton } from "@wandry/inertia-form";
-
-export function ContactForm() {
-  return (
-    <Form
-      action="/contact"
-      method="post"
-      defaultValues={{ name: "", email: "" }}
-    >
-      <TextField name="name" label="Имя" required />
-      <TextField name="email" label="Email" type="email" required />
-      <SubmitButton>Отправить</SubmitButton>
-    </Form>
-  );
-}
-```
-
-### Кастомное поле
-
-```tsx
-import { Field } from "@wandry/inertia-form";
-
-function ColorPicker({ name, label }) {
-  return (
-    <Field
-      name={name}
-      label={label}
-      controller={({ value, onChange }) => (
-        <input
-          type="color"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-        />
-      )}
-    />
-  );
-}
-```
-
-## 🔗 Ссылки
-
-- [📖 Полная документация](./docs/README.md)
-- [🚀 Быстрый старт](./docs/getting-started.md)
-- [💡 Примеры](./docs/examples/)
-- [🐛 Issues](https://github.com/your-repo/inertia-form/issues)
-- [📦 NPM Package](https://www.npmjs.com/package/@wandry/inertia-form)
-
-## 📄 Лицензия
-
-ISC
+Just describe the fields - don't worry about how to link them to the form, we'll do that for you.
 
 ---
+
+## Components and Hooks
+
+### Form
+
+**Usage Example:**
+
+```tsx
+<Form
+  action="/api/submit"
+  method="post"
+  defaultValues={{ name: "" }}
+  onSubmit={(values) => console.log(values)}
+>
+  {/* form fields */}
+</Form>
+```
+
+| Prop                | Type                                                                   | Required | Description                                                                    |
+| ------------------- | ---------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------ |
+| `action`            | `string`                                                               | Yes      | URL or form action object.                                                     |
+| `id`                | `string`                                                               | No       | HTML id for the form.                                                          |
+| `method`            | `"get"` \| `"post"` \| `"put"` \| `"patch"` \| `"delete"`              | No       | HTTP method for form submission. Default is `"post"`.                          |
+| `defaultValues`     | `Record<string, any>`                                                  | No       | Initial values for form fields.                                                |
+| `options`           | `FormOptions`                                                          | No       | Options for form submission (except `data`).                                   |
+| `className`         | `string`                                                               | No       | CSS class for the form.                                                        |
+| `validationSchema`  | `any`                                                                  | No       | Validation schema (e.g., for Yup).                                             |
+| `validator`         | `ValidationAdapter`                                                    | No       | Custom validation adapter.                                                     |
+| `sharedProps`       | `Record<string, any>`                                                  | No       | Shared props that will be available to all form fields.                        |
+| `preventFormAction` | `boolean`                                                              | No       | If `true`, prevents default form behavior on submission.                       |
+| `onSubmit`          | `(value: any) => void`                                                 | No       | Callback called when the form is submitted.                                    |
+| `useWayfinder`      | `boolean`                                                              | No       | Whether to use Wayfinder mode for form submission.                             |
+| ...FormAttrs        | `HTMLAttributes<HTMLFormElement>` (without `defaultValue`, `onSubmit`) | No       | Any other standard HTML form attributes, except `defaultValue` and `onSubmit`. |
+
+---
+
+### Field
+
+**Usage Example:**
+
+```tsx
+<Field
+  name="email"
+  controller={({ value, onChange, error }) => (
+    <div>
+      <input
+        type="email"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="Enter email"
+      />
+      {error && <span style={{ color: "red" }}>{error}</span>}
+    </div>
+  )}
+/>
+```
+
+| Prop           | Type                                                    | Required | Description                                                     |
+| -------------- | ------------------------------------------------------- | -------- | --------------------------------------------------------------- |
+| `id`           | `string`                                                | No       | HTML id for the field.                                          |
+| `name`         | `string`                                                | Yes      | Field name (key in the form).                                   |
+| `controller`   | `(field: FieldControllerProps<TValue>) => ReactElement` | Yes      | Controller function that returns a React element for the field. |
+| `defaultValue` | `FieldValue`                                            | No       | Initial field value.                                            |
+
+**FieldControllerProps** is passed to `controller`:
+
+| Prop       | Type                      | Required | Description                    |
+| ---------- | ------------------------- | -------- | ------------------------------ |
+| `onChange` | `(value: TValue) => void` | Yes      | Value change handler.          |
+| `value`    | `TValue`                  | Yes      | Current field value.           |
+| `error`    | `string`                  | No       | Error message (if any).        |
+| `disabled` | `boolean`                 | No       | Whether the field is disabled. |
+
+### useField
+
+**Usage Example:**
+
+```tsx
+const { value, onChange, error } = useField("username", { defaultValue: "" });
+
+return (
+  <div>
+    <input
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder="Enter username"
+    />
+    {error && <span style={{ color: "red" }}>{error}</span>}
+  </div>
+);
+```
+
+| Return Value | Type                          | Description                           |
+| ------------ | ----------------------------- | ------------------------------------- |
+| `value`      | `FieldValue`                  | Current field value.                  |
+| `onChange`   | `(value: FieldValue) => void` | Function for updating field value.    |
+| `error`      | `string` \| `undefined`       | Error message for the field (if any). |
+
+**Parameters:**
+
+| Parameter | Type                     | Required | Description                         |
+| --------- | ------------------------ | -------- | ----------------------------------- |
+| `name`    | `string`                 | Yes      | Field name (key in the form).       |
+| `options` | `{ defaultValue?: any }` | No       | Options, e.g., initial field value. |
+
+### useFormContext
+
+> **Note:** The `useFormContext` hook should only be used inside the `Form` component.
+
+**Usage Example:**
+
+```tsx
+const { getValues, setValue, form } = useFormContext();
+
+// Get all form values
+const allValues = getValues();
+
+// Get a specific field value
+const email = getValues("email");
+
+// Set field value
+setValue("username", "newUser");
+```
+
+| Return Value | Type                                         | Description                                               |
+| ------------ | -------------------------------------------- | --------------------------------------------------------- |
+| `form`       | `FormContextType`                            | Form context, includes state and form management methods. |
+| `getValues`  | `(name?: string, defaultValue?: any) => any` | Get all form values or a specific field value by name.    |
+| `setValue`   | `(name: string, value: any) => void`         | Set field value by name.                                  |
+
+### useWatch
+
+A hook for tracking changes to form values or a specific field in real-time.
+
+**Usage Example:**
+
+```tsx
+import { useWatch } from "@wandry/inertia-form";
+
+function ProfileForm() {
+  const username = useWatch("username");
+  const allValues = useWatch();
+
+  return (
+    <div>
+      <div>Username: {username}</div>
+      <pre>{JSON.stringify(allValues, null, 2)}</pre>
+    </div>
+  );
+}
+```
+
+| Параметр  | Type                     | Required | Description                                                       |
+| --------- | ------------------------ | -------- | ----------------------------------------------------------------- |
+| `name`    | `string`                 | No       | Field name to track (nested keys are supported via dot notation). |
+| `options` | `{ defaultValue?: any }` | No       | Options, e.g., default value if the field is missing.             |

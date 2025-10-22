@@ -1,4 +1,4 @@
-import { isJoiSchema, isYupSchema, isZodSchema } from "./matchers";
+import { isYupSchema, isZodSchema } from "./matchers";
 
 export type ValidatorResult = {
   success: boolean;
@@ -40,25 +40,7 @@ export const zodAdapter = (schema: any): ValidationAdapter => ({
   },
 });
 
-export const joiAdapter = (schema: any): ValidationAdapter => ({
-  async validate(data) {
-    try {
-      const result = await schema.validateAsync(data);
-      return { success: true, value: result };
-    } catch (err: any) {
-      return {
-        success: false,
-        errors: err.details.reduce((acc: any, detail: any) => {
-          acc[detail.path.join(".")] = detail.message;
-          return acc;
-        }, {}),
-      };
-    }
-  },
-});
-
 export const autoAdapter = (schema: any): ValidationAdapter | null => {
-  if (isJoiSchema(schema)) return joiAdapter(schema);
   if (isYupSchema(schema)) return yupAdapter(schema);
   if (isZodSchema(schema)) return zodAdapter(schema);
 

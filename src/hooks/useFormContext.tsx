@@ -1,9 +1,10 @@
 import { useContext } from "react";
-import { FormContext } from "../components/form/form";
 
-import get from "lodash.get";
 import cloneDeep from "lodash.clonedeep";
 import set from "lodash.set";
+
+import { FormContext } from "../core/form/form";
+import get from "../logic/get";
 
 export const useFormContext = () => {
   const context = useContext(FormContext);

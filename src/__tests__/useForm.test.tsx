@@ -2,12 +2,12 @@ import { userEvent } from "@testing-library/user-event";
 import { render, screen, waitFor } from "@testing-library/react";
 
 import { useFormContext, useWatch } from "../hooks";
-import { Form } from "../components/form";
+import { Form } from "../core/form";
 
 const user = userEvent.setup();
 
 const TestWatchComponent = ({ name = "test" }: { name?: string }) => {
-  const value = useWatch(name);
+  const value = useWatch<any>(name);
 
   return <div data-testid="test-watch">{value}</div>;
 };

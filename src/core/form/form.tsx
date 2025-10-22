@@ -1,9 +1,8 @@
 import React, { HTMLAttributes, useCallback } from "react";
 
-import { VisitOptions } from "@inertiajs/core";
+import { Method, VisitOptions } from "@inertiajs/core";
 import { InertiaFormProps, useForm } from "@inertiajs/react";
 
-import { cn } from "../../lib/utils";
 import { autoAdapter, ValidationAdapter } from "../validator/adapters";
 
 type FormOptions = Omit<VisitOptions, "data">;
@@ -13,13 +12,17 @@ type FormAttrs = Omit<
   "defaultValue" | "onSubmit"
 >;
 
+type WayfinderFormAction = {
+  url: string;
+  method: Method;
+};
+
 type FormProps = React.PropsWithChildren<{
-  action: string;
+  action: string | WayfinderFormAction;
   id?: string;
   method?: "get" | "post" | "put" | "patch" | "delete";
   defaultValues?: FormData;
   options?: FormOptions;
-  isEditable?: boolean;
   className?: string;
   validationSchema?: any;
   validator?: ValidationAdapter;
@@ -27,7 +30,7 @@ type FormProps = React.PropsWithChildren<{
   preventFormAction?: boolean;
   transform?: (data: FormData) => FormData;
   onSubmit?: (value: any) => void;
-  onBeforeSubmit?: (data: FormData, form: InertiaFormProps<FormData>) => void;
+  useWayfinder?: boolean;
 }> &
   FormAttrs;
 
@@ -52,8 +55,8 @@ function Form({
   validator,
   sharedProps,
   transform,
-  onBeforeSubmit,
   onSubmit,
+  useWayfinder = false,
   preventFormAction = false,
   method = "post",
   ...attrs
@@ -61,6 +64,8 @@ function Form({
   const form = useForm(defaultValues);
 
   const normalizedTransform = transform ?? ((data: FormData) => data);
+
+  form.transform(normalizedTransform);
 
   const validate = async (data: FormData): Promise<boolean> => {
     const adapter = validator ?? autoAdapter(validationSchema);
@@ -88,30 +93,28 @@ function Form({
 
       const payload = normalizedTransform(form.data);
 
-      onBeforeSubmit?.(form.data, form);
       onSubmit?.(payload);
 
       if (preventFormAction) return;
 
       form.setData(payload);
-      form.submit(method, action, options);
+
+      if (useWayfinder) {
+        form.submit(action as WayfinderFormAction, options);
+      } else {
+        const handler = form[method];
+        handler(action as string, options);
+      }
     },
     [form.data]
   );
 
   const reset = () => {
-    form.reset();
-    const handler = form[method];
-    handler(action, options);
+    form.setData(defaultValues || {});
   };
 
   return (
-    <form
-      id={id}
-      onSubmit={handleSubmit}
-      className={cn("space-y-4", className)}
-      {...attrs}
-    >
+    <form id={id} onSubmit={handleSubmit} className={className} {...attrs}>
       <FormProvider form={form} reset={reset} sharedProps={sharedProps}>
         {children}
       </FormProvider>

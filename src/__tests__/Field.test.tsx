@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 
-import { Field } from "../components/fields";
-import { Form } from "../components/form";
+import { Field } from "../core/fields";
+import { Form } from "../core/form";
 import { vi } from "vitest";
 
 const user = userEvent.setup();
@@ -11,22 +11,25 @@ describe("Field", () => {
   it("should correctly render default layout", () => {
     render(
       <Form action="">
-        <Field name="test" label="Test field" controller={(field) => <></>} />
+        <Field
+          name="test"
+          controller={(field) => (
+            <label htmlFor="input">
+              Test field
+              <input id="input" />
+            </label>
+          )}
+        />
       </Form>
     );
 
     expect(screen.getByText("Test field")).toBeInTheDocument();
-    expect(screen.getByTestId("field-group")).toBeInTheDocument();
   });
 
   it("should correctly render controller", () => {
     render(
       <Form action="">
-        <Field
-          name="test"
-          label="Test field"
-          controller={(field) => <input />}
-        />
+        <Field name="test" controller={(field) => <input />} />
       </Form>
     );
 
@@ -38,7 +41,6 @@ describe("Field", () => {
       <Form action="">
         <Field
           name="test"
-          label="Test field"
           controller={(field) => (
             <input
               value={field.value as string}
@@ -63,7 +65,6 @@ describe("Field", () => {
       render(
         <Field
           name="test"
-          label="Test field"
           controller={(field) => (
             <input
               value={field.value as string}
@@ -73,25 +74,5 @@ describe("Field", () => {
         />
       );
     }).toThrow("Field must be used inside Form component");
-  });
-
-  it("should has custom classes", () => {
-    render(
-      <Form action="">
-        <Field
-          name="test"
-          label="Test field"
-          classes={{
-            label: "custom-label",
-            container: "custom-container",
-            error: "custom-error",
-          }}
-          controller={(field) => <input />}
-        />
-      </Form>
-    );
-
-    expect(screen.getByText("Test field")).toHaveClass("custom-label");
-    expect(screen.getByTestId("field-group")).toHaveClass("custom-container");
   });
 });
