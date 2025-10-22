@@ -10,6 +10,8 @@ export default <T>(
 
   if (!object) return defaultValues;
 
+  if (!Object.keys(object).length) return defaultValues;
+
   if (!path || !isObject(object)) return object;
 
   return (

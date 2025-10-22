@@ -17,4 +17,9 @@ describe("get", () => {
     const result = get(null, "a.b.c", "default");
     expect(result).toBe("default");
   });
+
+  it("should return the default value if the object is empty", () => {
+    const result = get({}, "a.b.c");
+    expect(result).toBe(null);
+  });
 });
