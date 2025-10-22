@@ -6,6 +6,8 @@ export default <T>(
   path?: string,
   defaultValues: any = null
 ): any => {
+  console.log("get called with:", { object, path, defaultValues });
+
   if (!object) return defaultValues;
 
   if (!path || !isObject(object)) return object;

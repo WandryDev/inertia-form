@@ -23,6 +23,9 @@ export function useWatch<T = DefaultWatchValue>(
   const { form } = useFormContext();
 
   const [value, setValue] = useState(() => {
+    console.log("form data", form.data);
+    console.log("name", name);
+    console.log("options", options);
     if (!name) {
       return form.data || {};
     }
