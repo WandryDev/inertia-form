@@ -20,14 +20,16 @@ We've made it so that anyone who has used react-hook-form can immediately use ou
 
 The root point is the `Form` component, which implements a wrapper over useForm from inertia.js and creates a React.Context that wraps all form state and the ability to manipulate it. That's it. All you need to do is call the `<Form>` component and all child components will already be able to work with your form.
 
-## Future Development
+## Wandry UI
 
-We plan to add a shadcn registry with a large set of form-related UI elements so that forms can be assembled like a constructor. For example, in the future, a form should look like this:
+[https://ui.wandry.com.ua/](https://ui.wandry.com.ua/)
+
+We have created shadcn/registry for UI form components that are fully controlled — you can simply insert them into the code and your form will already be working. This way, your forms will look like this:
 
 ```tsx
 import { Form } from "@wandry/inertia-form";
 
-import { TextField, PasswordField, SubmitButton } from "@/components/ui";
+import { TextField, PasswordField, SubmitButton } from "@/components/wandry-ui";
 
 const Login: React.FC = () => {
   const loginSchema = z.object({
@@ -45,7 +47,7 @@ const Login: React.FC = () => {
 };
 ```
 
-In addition, we plan to improve and add even more capabilities for useWatch and many other things
+Just describe the fields - don't worry about how to link them to the form, we'll do that for you.
 
 ---
 
