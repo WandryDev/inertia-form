@@ -22,15 +22,12 @@ const TextField = ({ name, label }: { name: string; label?: string }) => {
   return (
     <Field
       name={name}
+      label={label}
       controller={(field) => (
-        <label>
-          {label}
-          <input
-            value={field.value as string}
-            onChange={(e) => field.onChange(e.target.value)}
-          />
-          <span>{field.error}</span>
-        </label>
+        <input
+          value={field.value as string}
+          onChange={(e) => field.onChange(e.target.value)}
+        />
       )}
     />
   );

@@ -13,17 +13,15 @@ describe("Field", () => {
       <Form action="">
         <Field
           name="test"
-          controller={(field) => (
-            <label htmlFor="input">
-              Test field
-              <input id="input" />
-            </label>
-          )}
+          label="Test field"
+          description="This is a test field"
+          controller={(field) => <input id="input" />}
         />
       </Form>
     );
 
     expect(screen.getByText("Test field")).toBeInTheDocument();
+    expect(screen.getByText("This is a test field")).toBeInTheDocument();
   });
 
   it("should correctly render controller", () => {
