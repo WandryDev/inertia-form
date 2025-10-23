@@ -55,7 +55,7 @@ function Field<TValue>({
   classes,
   label,
   description,
-  orientation = "horizontal",
+  orientation = "vertical",
 }: FieldProps<TValue>) {
   const { error, value, onChange } = useField(name, { defaultValue });
 
