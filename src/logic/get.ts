@@ -1,23 +1,27 @@
+import isKey from "./isKey";
+import isNullOrUndefined from "./isNullOrUndefined";
 import isObject from "./isObject";
+import isUndefined from "./isUndefined";
 import stringToPath from "./stringToPath";
 
 export default <T>(
   object: T,
-  path?: string,
-  defaultValues: any = null
+  path?: string | null,
+  defaultValue?: unknown
 ): any => {
-  console.log("get called with:", { object, path, defaultValues });
+  if (!path || !isObject(object)) {
+    return defaultValue;
+  }
 
-  if (!object) return defaultValues;
-
-  if (!Object.keys(object).length) return defaultValues;
-
-  if (!path || !isObject(object)) return object;
-
-  return (
-    stringToPath(path).reduce(
-      (acc, key) => acc[key as keyof T & object],
-      object
-    ) ?? defaultValues
+  const result = (isKey(path) ? [path] : stringToPath(path)).reduce(
+    (result, key) =>
+      isNullOrUndefined(result) ? result : result[key as keyof T & object],
+    object
   );
+
+  return isUndefined(result) || result === object
+    ? isUndefined(object[path as keyof T])
+      ? defaultValue
+      : object[path as keyof T]
+    : result;
 };

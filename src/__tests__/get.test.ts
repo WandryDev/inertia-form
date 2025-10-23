@@ -1,25 +1,74 @@
 import get from "../logic/get";
 
 describe("get", () => {
-  it("should return the value at the specified path", () => {
-    const obj = { a: { b: { c: 42 } } };
-    const result = get(obj, "a.b.c");
-    expect(result).toBe(42);
+  it("should get the right data", () => {
+    const test = {
+      bill: [1, 2, 3],
+      luo: [1, 3, { betty: "test" }],
+      betty: { test: { test1: [{ test2: "bill" }] } },
+      "betty.test.test1[0].test1": "test",
+      "dotted.filled": "content",
+      "dotted.empty": "",
+    };
+    expect(get(test, "bill")).toEqual([1, 2, 3]);
+    expect(get(test, "bill[0]")).toEqual(1);
+    expect(get(test, "luo[2].betty")).toEqual("test");
+    expect(get(test, "betty.test.test1[0].test2")).toEqual("bill");
+    expect(get(test, "betty.test.test1[0].test1")).toEqual("test");
+    expect(get(test, "betty.test.test1[0].test3")).toEqual(undefined);
+    expect(get(test, "dotted.filled")).toEqual(test["dotted.filled"]);
+    expect(get(test, "dotted.empty")).toEqual(test["dotted.empty"]);
+    expect(get(test, "dotted.nonexistent", "default")).toEqual("default");
   });
 
-  it("should return the default value if the path is not found", () => {
-    const obj = { a: { b: { c: 42 } } };
-    const result = get(obj, "a.b.d", "default");
-    expect(result).toBe("default");
+  it("should get from the flat data", () => {
+    const test = {
+      bill: "test",
+    };
+    expect(get(test, "bill")).toEqual("test");
   });
 
-  it("should return the default value if the object is not found", () => {
-    const result = get(null, "a.b.c", "default");
-    expect(result).toBe("default");
+  it("should return undefined when provided with empty path", () => {
+    const test = {
+      bill: "test",
+    };
+    expect(get(test, "")).toEqual(undefined);
+    expect(get(test, undefined)).toEqual(undefined);
+    expect(get(test, null)).toEqual(undefined);
   });
 
-  it("should return the default value if the object is empty", () => {
-    const result = get({}, "a.b.c");
-    expect(result).toBe(null);
+  it("should retrieve values from path containing quotes", () => {
+    const object = {
+      "Im with single quote!": {
+        _f: {
+          name: "I'm with single quote!",
+          mount: true,
+          required: true,
+        },
+      },
+      "With  dobule quote": {
+        _f: {
+          name: 'With " dobule quote',
+          mount: true,
+          required: true,
+        },
+      },
+    };
+
+    expect(get(object, "I'm with single quote!")).toEqual({
+      _f: {
+        name: "I'm with single quote!",
+        mount: true,
+        required: true,
+      },
+    });
+
+    expect(get(object, 'With " dobule quote')).toEqual({
+      _f: {
+        name: 'With " dobule quote',
+        mount: true,
+        required: true,
+      },
+    });
   });
 });
