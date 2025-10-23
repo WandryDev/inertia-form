@@ -188,4 +188,9 @@ describe("clone", () => {
     const copy = cloneObject(dateTime);
     expect(copy._tag).toBe("Utc");
   });
+
+  it("should not throw error when object null", () => {
+    const copy = cloneObject(null);
+    expect(copy).toBe(null);
+  });
 });

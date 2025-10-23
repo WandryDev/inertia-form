@@ -1,3 +1,4 @@
+import isNullOrUndefined from "./isNullOrUndefined";
 import isObject from "./isObject";
 import isPlainObject from "./isPlainObject";
 import isWeb from "./isWeb";
@@ -7,6 +8,10 @@ export default function cloneObject<T>(data: T): T {
   const isArray = Array.isArray(data);
   const isFileListInstance =
     typeof FileList !== "undefined" ? data instanceof FileList : false;
+
+  if (isNullOrUndefined(data)) {
+    return data;
+  }
 
   if (data instanceof Date) {
     copy = new Date(data);
