@@ -114,7 +114,12 @@ function Form({
   };
 
   return (
-    <form id={id} onSubmit={handleSubmit} className={className} {...attrs}>
+    <form
+      id={id}
+      onSubmit={handleSubmit}
+      className={["space-y-2", className].join(" ")}
+      {...attrs}
+    >
       <FormProvider form={form} reset={reset} sharedProps={sharedProps}>
         {children}
       </FormProvider>
