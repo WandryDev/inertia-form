@@ -42,8 +42,8 @@
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
-    "@inertiajs/core": "^2.0.x",
-    "@inertiajs/react": "^2.0.x",
+    "@inertiajs/core": ">=1",
+    "@inertiajs/react": ">=1",
     "@types/react": ">=17",
     "@types/react-dom": ">=17",
     "react": ">=17"
