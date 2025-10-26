@@ -1,4 +1,5 @@
 import React, { HTMLAttributes, useCallback } from "react";
+import { clsx } from "clsx";
 
 import { Method, VisitOptions } from "@inertiajs/core";
 import { InertiaFormProps, useForm } from "@inertiajs/react";
@@ -117,7 +118,7 @@ function Form({
     <form
       id={id}
       onSubmit={handleSubmit}
-      className={["space-y-2", className].join(" ")}
+      className={clsx("space-y-2", className)}
       {...attrs}
     >
       <FormProvider form={form} reset={reset} sharedProps={sharedProps}>

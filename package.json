@@ -46,7 +46,8 @@
     "@inertiajs/react": ">=1",
     "@types/react": ">=17",
     "@types/react-dom": ">=17",
-    "react": ">=17"
+    "react": ">=17",
+    "clsx": ">=1"
   },
   "dependencies": {
     "yup": "^1.6.1",
