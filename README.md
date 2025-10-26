@@ -24,12 +24,23 @@ The root point is the `Form` component, which implements a wrapper over useForm 
 
 [https://ui.wandry.com.ua/](https://ui.wandry.com.ua/)
 
-We have created shadcn/registry for UI form components that are fully controlled — you can simply insert them into the code and your form will already be working. This way, your forms will look like this:
+We have created shadcn/registry for UI form components that are fully controlled — you can simply insert them into the code and your form will already be working.
+
+### Install and enjoy
+
+```bash
+npx shadcn@latest add @wandry-ui/text-field
+```
+
+This way, your forms will look like this:
 
 ```tsx
 import { Form } from "@wandry/inertia-form";
 
-import { TextField, PasswordField, SubmitButton } from "@/components/wandry-ui";
+import TextField from "@/components/text-field";
+import PasswordField from "@/components/password-field";
+
+import { Button } from "@/components/ui/button";
 
 const Login: React.FC = () => {
   const loginSchema = z.object({
@@ -41,7 +52,7 @@ const Login: React.FC = () => {
     <Form action="/login" validationSchema={loginSchema}>
       <TextField name="email" label="Email" />
       <PasswordField name="password" label="Password" />
-      <SubmitButton />
+      <Button type="submit">Submit</Button>
     </Form>
   );
 };
@@ -202,7 +213,7 @@ function ProfileForm() {
 }
 ```
 
-| Параметр  | Type                     | Required | Description                                                       |
+| Name      | Type                     | Required | Description                                                       |
 | --------- | ------------------------ | -------- | ----------------------------------------------------------------- |
 | `name`    | `string`                 | No       | Field name to track (nested keys are supported via dot notation). |
 | `options` | `{ defaultValue?: any }` | No       | Options, e.g., default value if the field is missing.             |
