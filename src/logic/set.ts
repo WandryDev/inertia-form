@@ -15,7 +15,7 @@ export default <T>(object: T, path: string, value?: unknown) => {
     if (index !== lastIndex) {
       const objValue = object[key as keyof T & object];
       newValue =
-        isObject(objValue) || Array.isArray(objValue)
+        objValue !== null && (isObject(objValue) || Array.isArray(objValue))
           ? objValue
           : !isNaN(+tempPath[index + 1])
           ? []

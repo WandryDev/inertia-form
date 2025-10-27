@@ -62,6 +62,12 @@ describe("set", () => {
     expect(test7).toEqual({
       a: undefined,
     });
+
+    const test8 = { address: { city: null } };
+    set(test8, "address.city.id", 4);
+    expect(test8).toEqual({
+      address: { city: { id: 4 } },
+    });
   });
 
   it("should not populate prototype", () => {
