@@ -20,7 +20,7 @@ export default <T>(
   );
 
   return isUndefined(result) || result === object
-    ? isUndefined(object[path as keyof T])
+    ? isNullOrUndefined(object[path as keyof T])
       ? defaultValue
       : object[path as keyof T]
     : result;
