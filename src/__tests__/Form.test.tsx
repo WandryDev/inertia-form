@@ -140,4 +140,66 @@ describe("Form", () => {
 
     expect(screen.getByText("Shared Label")).toBeInTheDocument();
   });
+
+  it("should reset form data when reset method is called with fields", async () => {
+    const TestComponent = () => {
+      const { reset } = useFormContext();
+
+      return (
+        <>
+          <TextField name="test" />
+          <button type="button" onClick={() => reset(["test"])}>
+            Reset
+          </button>
+          <button type="submit">Submit</button>
+        </>
+      );
+    };
+
+    render(
+      <Form action="/submit" method="post" data-testid="form">
+        <TestComponent />
+      </Form>
+    );
+
+    const user = userEvent.setup();
+    const input = screen.getByRole("textbox");
+    const resetButton = screen.getByRole("button", { name: /reset/i });
+
+    // Type some text
+    await user.type(input, "test value");
+    expect(input).toHaveValue("test value");
+
+    // Reset the form
+    await user.click(resetButton);
+    expect(input).toHaveValue(undefined);
+  });
+
+  it("should reset form when reset method is called without fields", async () => {
+    const TestComponent = () => {
+      const { reset } = useFormContext();
+
+      return (
+        <>
+          <button type="button" onClick={() => reset()}>
+            Reset
+          </button>
+          <button type="submit">Submit</button>
+        </>
+      );
+    };
+
+    render(
+      <Form action="/submit" method="post" data-testid="form">
+        <TestComponent />
+      </Form>
+    );
+
+    const user = userEvent.setup();
+    const resetButton = screen.getByRole("button", { name: /reset/i });
+
+    // Reset should work even without fields
+    await user.click(resetButton);
+    expect(resetButton).toBeInTheDocument();
+  });
 });

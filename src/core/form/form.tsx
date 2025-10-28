@@ -5,6 +5,9 @@ import { Method, VisitOptions } from "@inertiajs/core";
 import { InertiaFormProps, useForm } from "@inertiajs/react";
 
 import { autoAdapter, ValidationAdapter } from "../validator/adapters";
+import cloneDeep from "../../logic/cloneObject";
+import set from "../../logic/set";
+import get from "../../logic/get";
 
 type FormOptions = Omit<VisitOptions, "data">;
 type FormData = Record<string, any>;
@@ -29,9 +32,10 @@ type FormProps = React.PropsWithChildren<{
   validator?: ValidationAdapter;
   sharedProps?: Record<string, any>;
   preventFormAction?: boolean;
+  resetOnSuccess?: string[] | boolean;
+  resetOnError?: string[] | boolean;
   transform?: (data: FormData) => FormData;
   onSubmit?: (value: any) => void;
-  useWayfinder?: boolean;
 }> &
   FormAttrs;
 
@@ -40,7 +44,11 @@ type FormProviderProps = React.PropsWithChildren<FormContextValues>;
 type FormContextValues = {
   form: InertiaFormProps<FormData>;
   sharedProps?: Record<string, any>;
-  reset?: () => void;
+  processing: boolean;
+  setValue: (name: string, value: any) => void;
+  getValues: (name?: string, defaultValue?: any) => any;
+  resetAndClearErrors: (fields?: string[]) => void;
+  reset: (fields?: string[]) => void;
 };
 
 export const FormContext = React.createContext<FormContextValues | null>(null);
@@ -57,7 +65,8 @@ function Form({
   sharedProps,
   transform,
   onSubmit,
-  useWayfinder = false,
+  resetOnSuccess = false,
+  resetOnError = false,
   preventFormAction = false,
   method = "post",
   ...attrs
@@ -67,6 +76,23 @@ function Form({
   const normalizedTransform = transform ?? ((data: FormData) => data);
 
   form.transform(normalizedTransform);
+
+  const getValues = (name?: string, defaultValue?: any) => {
+    if (!name) {
+      return form.data;
+    }
+
+    return get(form.data, name, defaultValue);
+  };
+
+  const setValue = (name: string, value: any) => {
+    return form.setData((data: any = {}) => {
+      const clonedData = cloneDeep(data);
+      set(clonedData, name, value);
+
+      return clonedData;
+    });
+  };
 
   const validate = async (data: FormData): Promise<boolean> => {
     const adapter = validator ?? autoAdapter(validationSchema);
@@ -81,6 +107,26 @@ function Form({
     }
 
     return true;
+  };
+
+  const resetFormFields = (fields: string[] = []) => {
+    fields.forEach((field) => {
+      const defaultValue = get(defaultValues || {}, field, undefined);
+      setValue(field, defaultValue);
+    });
+  };
+
+  const reset = (fields: string[] = []) => {
+    if (fields.length === 0) {
+      return form.setData(cloneDeep(defaultValues || {}));
+    }
+
+    return resetFormFields(fields);
+  };
+
+  const resetAndClearErrors = (fields: string[] = []) => {
+    form.clearErrors(...fields);
+    reset(fields);
   };
 
   const handleSubmit = useCallback(
@@ -100,19 +146,35 @@ function Form({
 
       form.setData(payload);
 
-      if (useWayfinder) {
-        form.submit(action as WayfinderFormAction, options);
-      } else {
-        const handler = form[method];
-        handler(action as string, options);
-      }
+      const handler = form[method];
+      handler(action as string, {
+        ...options,
+        onSuccess: (...args) => {
+          options?.onSuccess?.(...args);
+
+          if (resetOnSuccess === true) {
+            return reset();
+          }
+
+          if (Array.isArray(resetOnSuccess) && resetOnSuccess.length > 0) {
+            return reset(resetOnSuccess);
+          }
+        },
+        onError: (...args) => {
+          options?.onError?.(...args);
+
+          if (resetOnError === true) {
+            return reset();
+          }
+
+          if (Array.isArray(resetOnError) && resetOnError.length > 0) {
+            return reset(resetOnError);
+          }
+        },
+      });
     },
     [form.data]
   );
-
-  const reset = () => {
-    form.setData(defaultValues || {});
-  };
 
   return (
     <form
@@ -121,7 +183,15 @@ function Form({
       className={clsx("space-y-2", className)}
       {...attrs}
     >
-      <FormProvider form={form} reset={reset} sharedProps={sharedProps}>
+      <FormProvider
+        processing={form.processing}
+        sharedProps={sharedProps}
+        form={form}
+        reset={reset}
+        setValue={setValue}
+        getValues={getValues}
+        resetAndClearErrors={resetAndClearErrors}
+      >
         {children}
       </FormProvider>
     </form>
@@ -132,10 +202,24 @@ const FormProvider: React.FC<FormProviderProps> = ({
   form,
   children,
   sharedProps,
+  processing,
   reset,
+  setValue,
+  getValues,
+  resetAndClearErrors,
 }) => {
   return (
-    <FormContext.Provider value={{ form, sharedProps, reset }}>
+    <FormContext.Provider
+      value={{
+        form,
+        sharedProps,
+        processing,
+        reset,
+        setValue,
+        getValues,
+        resetAndClearErrors,
+      }}
+    >
       {children}
     </FormContext.Provider>
   );
