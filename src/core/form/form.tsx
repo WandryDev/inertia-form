@@ -22,9 +22,9 @@ type WayfinderFormAction = {
 };
 
 type FormProps = React.PropsWithChildren<{
-  action: string | WayfinderFormAction;
+  action: string;
   id?: string;
-  method?: "get" | "post" | "put" | "patch" | "delete";
+  method?: Method;
   defaultValues?: FormData;
   options?: FormOptions;
   className?: string;
@@ -63,8 +63,8 @@ function Form({
   validationSchema,
   validator,
   sharedProps,
-  transform,
   onSubmit,
+  transform = (data: FormData) => data,
   resetOnSuccess = false,
   resetOnError = false,
   preventFormAction = false,
@@ -72,10 +72,6 @@ function Form({
   ...attrs
 }: FormProps) {
   const form = useForm(defaultValues);
-
-  const normalizedTransform = transform ?? ((data: FormData) => data);
-
-  form.transform(normalizedTransform);
 
   const getValues = (name?: string, defaultValue?: any) => {
     if (!name) {
@@ -138,42 +134,39 @@ function Form({
 
       if (!isValid) return;
 
-      const payload = normalizedTransform(form.data);
+      const payload = transform(form.data);
 
       onSubmit?.(payload);
 
       if (preventFormAction) return;
 
       form.setData(payload);
+      form.transform(() => transform(form.data));
+      form.submit(method, action, {
+        ...options,
+        onSuccess: (...args) => {
+          options?.onSuccess?.(...args);
 
-      setTimeout(() => {
-        const handler = form[method];
-        handler(action as string, {
-          ...options,
-          onSuccess: (...args) => {
-            options?.onSuccess?.(...args);
+          if (resetOnSuccess === true) {
+            return reset();
+          }
 
-            if (resetOnSuccess === true) {
-              return reset();
-            }
+          if (Array.isArray(resetOnSuccess) && resetOnSuccess.length > 0) {
+            return reset(resetOnSuccess);
+          }
+        },
+        onError: (...args) => {
+          options?.onError?.(...args);
 
-            if (Array.isArray(resetOnSuccess) && resetOnSuccess.length > 0) {
-              return reset(resetOnSuccess);
-            }
-          },
-          onError: (...args) => {
-            options?.onError?.(...args);
+          if (resetOnError === true) {
+            return reset();
+          }
 
-            if (resetOnError === true) {
-              return reset();
-            }
-
-            if (Array.isArray(resetOnError) && resetOnError.length > 0) {
-              return reset(resetOnError);
-            }
-          },
-        });
-      }, 50);
+          if (Array.isArray(resetOnError) && resetOnError.length > 0) {
+            return reset(resetOnError);
+          }
+        },
+      });
     },
     [form.data]
   );
