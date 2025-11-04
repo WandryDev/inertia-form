@@ -146,32 +146,34 @@ function Form({
 
       form.setData(payload);
 
-      const handler = form[method];
-      handler(action as string, {
-        ...options,
-        onSuccess: (...args) => {
-          options?.onSuccess?.(...args);
+      setTimeout(() => {
+        const handler = form[method];
+        handler(action as string, {
+          ...options,
+          onSuccess: (...args) => {
+            options?.onSuccess?.(...args);
 
-          if (resetOnSuccess === true) {
-            return reset();
-          }
+            if (resetOnSuccess === true) {
+              return reset();
+            }
 
-          if (Array.isArray(resetOnSuccess) && resetOnSuccess.length > 0) {
-            return reset(resetOnSuccess);
-          }
-        },
-        onError: (...args) => {
-          options?.onError?.(...args);
+            if (Array.isArray(resetOnSuccess) && resetOnSuccess.length > 0) {
+              return reset(resetOnSuccess);
+            }
+          },
+          onError: (...args) => {
+            options?.onError?.(...args);
 
-          if (resetOnError === true) {
-            return reset();
-          }
+            if (resetOnError === true) {
+              return reset();
+            }
 
-          if (Array.isArray(resetOnError) && resetOnError.length > 0) {
-            return reset(resetOnError);
-          }
-        },
-      });
+            if (Array.isArray(resetOnError) && resetOnError.length > 0) {
+              return reset(resetOnError);
+            }
+          },
+        });
+      }, 50);
     },
     [form.data]
   );
