@@ -143,6 +143,8 @@ function Form({
 
     // form.setData(payload);
 
+    console.log("Submitting form to:", { data: form.data });
+
     form.submit(method, action, {
       ...options,
       onSuccess: (...args) => {
