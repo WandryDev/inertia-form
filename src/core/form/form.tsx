@@ -73,6 +73,8 @@ function Form({
 }: FormProps) {
   const form = useForm(defaultValues);
 
+  form.transform(() => transform(form.data));
+
   const getValues = (name?: string, defaultValue?: any) => {
     if (!name) {
       return form.data;
@@ -139,35 +141,33 @@ function Form({
 
     if (preventFormAction) return;
 
-    form.setData(payload);
-    form.transform(() => transform(form.data));
-    setTimeout(() => {
-      form.submit(method, action, {
-        ...options,
-        onSuccess: (...args) => {
-          options?.onSuccess?.(...args);
+    // form.setData(payload);
 
-          if (resetOnSuccess === true) {
-            return reset();
-          }
+    form.submit(method, action, {
+      ...options,
+      onSuccess: (...args) => {
+        options?.onSuccess?.(...args);
 
-          if (Array.isArray(resetOnSuccess) && resetOnSuccess.length > 0) {
-            return reset(resetOnSuccess);
-          }
-        },
-        onError: (...args) => {
-          options?.onError?.(...args);
+        if (resetOnSuccess === true) {
+          return reset();
+        }
 
-          if (resetOnError === true) {
-            return reset();
-          }
+        if (Array.isArray(resetOnSuccess) && resetOnSuccess.length > 0) {
+          return reset(resetOnSuccess);
+        }
+      },
+      onError: (...args) => {
+        options?.onError?.(...args);
 
-          if (Array.isArray(resetOnError) && resetOnError.length > 0) {
-            return reset(resetOnError);
-          }
-        },
-      });
-    }, 1000);
+        if (resetOnError === true) {
+          return reset();
+        }
+
+        if (Array.isArray(resetOnError) && resetOnError.length > 0) {
+          return reset(resetOnError);
+        }
+      },
+    });
   };
 
   return (
