@@ -125,51 +125,48 @@ function Form({
     reset(fields);
   };
 
-  const handleSubmit = useCallback(
-    async (e: React.FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-      const isValid = await validate(form.data);
+    const isValid = await validate(form.data);
 
-      if (!isValid) return;
+    if (!isValid) return;
 
-      const payload = transform(form.data);
+    const payload = transform(form.data);
 
-      onSubmit?.(payload);
+    onSubmit?.(payload);
 
-      if (preventFormAction) return;
+    if (preventFormAction) return;
 
-      form.setData(payload);
-      form.transform(() => transform(form.data));
-      form.submit(method, action, {
-        ...options,
-        onSuccess: (...args) => {
-          options?.onSuccess?.(...args);
+    form.setData(payload);
+    form.transform(() => transform(form.data));
+    form.submit(method, action, {
+      ...options,
+      onSuccess: (...args) => {
+        options?.onSuccess?.(...args);
 
-          if (resetOnSuccess === true) {
-            return reset();
-          }
+        if (resetOnSuccess === true) {
+          return reset();
+        }
 
-          if (Array.isArray(resetOnSuccess) && resetOnSuccess.length > 0) {
-            return reset(resetOnSuccess);
-          }
-        },
-        onError: (...args) => {
-          options?.onError?.(...args);
+        if (Array.isArray(resetOnSuccess) && resetOnSuccess.length > 0) {
+          return reset(resetOnSuccess);
+        }
+      },
+      onError: (...args) => {
+        options?.onError?.(...args);
 
-          if (resetOnError === true) {
-            return reset();
-          }
+        if (resetOnError === true) {
+          return reset();
+        }
 
-          if (Array.isArray(resetOnError) && resetOnError.length > 0) {
-            return reset(resetOnError);
-          }
-        },
-      });
-    },
-    [form.data]
-  );
+        if (Array.isArray(resetOnError) && resetOnError.length > 0) {
+          return reset(resetOnError);
+        }
+      },
+    });
+  };
 
   return (
     <form
