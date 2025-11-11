@@ -16,13 +16,11 @@ type FormAttrs = Omit<
   "defaultValue" | "onSubmit"
 >;
 
-type WayfinderFormAction = {
-  url: string;
-  method: Method;
-};
+type ChildrenFn = (form: InertiaFormProps<FormData>) => React.ReactNode;
 
-type FormProps = React.PropsWithChildren<{
+type FormProps = {
   action: string;
+  children: React.ReactNode | ChildrenFn;
   id?: string;
   method?: Method;
   defaultValues?: FormData;
@@ -36,8 +34,7 @@ type FormProps = React.PropsWithChildren<{
   resetOnError?: string[] | boolean;
   transform?: (data: FormData) => FormData;
   onSubmit?: (value: any) => void;
-}> &
-  FormAttrs;
+} & FormAttrs;
 
 type FormProviderProps = React.PropsWithChildren<FormContextValues>;
 
@@ -49,6 +46,12 @@ type FormContextValues = {
   getValues: (name?: string, defaultValue?: any) => any;
   resetAndClearErrors: (fields?: string[]) => void;
   reset: (fields?: string[]) => void;
+};
+
+const isChildrenFn = (
+  children: React.ReactNode | ChildrenFn
+): children is ChildrenFn => {
+  return typeof children === "function";
 };
 
 export const FormContext = React.createContext<FormContextValues | null>(null);
@@ -141,10 +144,6 @@ function Form({
 
     if (preventFormAction) return;
 
-    // form.setData(payload);
-
-    console.log("Submitting form to:", { data: form.data });
-
     form.submit(method, action, {
       ...options,
       onSuccess: (...args) => {
@@ -188,7 +187,7 @@ function Form({
         getValues={getValues}
         resetAndClearErrors={resetAndClearErrors}
       >
-        {children}
+        {isChildrenFn(children) ? children(form) : children}
       </FormProvider>
     </form>
   );
