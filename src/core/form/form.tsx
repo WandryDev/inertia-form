@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, useCallback } from "react";
+import React, { HTMLAttributes, ReactNode, useCallback } from "react";
 import { clsx } from "clsx";
 
 import { Method, VisitOptions } from "@inertiajs/core";
@@ -13,14 +13,14 @@ type FormOptions = Omit<VisitOptions, "data">;
 type FormData = Record<string, any>;
 type FormAttrs = Omit<
   HTMLAttributes<HTMLFormElement>,
-  "defaultValue" | "onSubmit"
+  "defaultValue" | "onSubmit" | "children"
 >;
 
-type ChildrenFn = (form: InertiaFormProps<FormData>) => React.ReactNode;
+type ChildrenFn = (form: FormContextValues) => ReactNode;
 
 type FormProps = {
   action: string;
-  children: React.ReactNode | ChildrenFn;
+  children: ReactNode | ChildrenFn;
   id?: string;
   method?: Method;
   defaultValues?: FormData;
@@ -36,7 +36,9 @@ type FormProps = {
   onSubmit?: (value: any) => void;
 } & FormAttrs;
 
-type FormProviderProps = React.PropsWithChildren<FormContextValues>;
+type FormProviderProps = FormContextValues & {
+  children: ReactNode | ChildrenFn;
+};
 
 type FormContextValues = {
   form: InertiaFormProps<FormData>;
@@ -49,7 +51,7 @@ type FormContextValues = {
 };
 
 const isChildrenFn = (
-  children: React.ReactNode | ChildrenFn
+  children: ReactNode | ChildrenFn
 ): children is ChildrenFn => {
   return typeof children === "function";
 };
@@ -187,7 +189,7 @@ function Form({
         getValues={getValues}
         resetAndClearErrors={resetAndClearErrors}
       >
-        {isChildrenFn(children) ? children(form) : children}
+        {children}
       </FormProvider>
     </form>
   );
@@ -203,19 +205,19 @@ const FormProvider: React.FC<FormProviderProps> = ({
   getValues,
   resetAndClearErrors,
 }) => {
+  const context = {
+    form,
+    sharedProps,
+    processing,
+    reset,
+    setValue,
+    getValues,
+    resetAndClearErrors,
+  };
+
   return (
-    <FormContext.Provider
-      value={{
-        form,
-        sharedProps,
-        processing,
-        reset,
-        setValue,
-        getValues,
-        resetAndClearErrors,
-      }}
-    >
-      {children}
+    <FormContext.Provider value={context}>
+      {isChildrenFn(children) ? children(context) : children}
     </FormContext.Provider>
   );
 };

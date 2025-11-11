@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/react";
+import { ReactElement } from "react";
 
 import * as z from "zod";
 import * as yup from "yup";
@@ -35,9 +36,24 @@ const TextField = ({ name, label }: { name: string; label?: string }) => {
 
 describe("Form", () => {
   it("should render without crashing", () => {
-    render(<Form action="/submit" method="post" data-testid="form"></Form>);
+    render(
+      <Form action="/submit" method="post" data-testid="form">
+        <input type="text" name="test" />
+      </Form>
+    );
 
     expect(screen.getByTestId("form")).toBeInTheDocument();
+  });
+
+  it("should render children fn without crashing", () => {
+    render(
+      <Form action="/submit" method="post" data-testid="form">
+        {(form) => <input type="text" name="test" />}
+      </Form>
+    );
+
+    expect(screen.getByTestId("form")).toBeInTheDocument();
+    expect(screen.getByRole("textbox")).toBeInTheDocument();
   });
 
   it("should render form input with submit button", () => {
